@@ -29,7 +29,7 @@ solar.calibrate32V1A(function () {
   });
 })
 
-function readFromSolar(){
+export function readFromSolar(){
   var reading = {
     voltage: 0, 
     current: 0
@@ -46,7 +46,7 @@ function readFromSolar(){
   return reading
 }
 
-function readFromMains(){
+export function readFromMains(){
   var reading = {
     voltage: 0, 
     current: 0
@@ -73,3 +73,4 @@ function read(){
 // setInterval(()=>{
 //   console.log(read())
 // }, 2000) 
+
