@@ -1,14 +1,11 @@
 
-var solar = require('easybotics-ina219');
-var mains = require('easybotics-ina219');
+var ina = require('easybotics-ina219');
 
-
-mains.init(undefined, 3);
+var solar = new ina()
+var mains = new ina()
 solar.init();
+mains.init(undefined, 3);
 
-solar.calibrate32V1A(function () {
-
-})
 
 mains.calibrate32V1A(function () {
   mains.getBusVoltage_V(function (volts) {
@@ -33,27 +30,46 @@ solar.calibrate32V1A(function () {
 })
 
 function readFromSolar(){
+  var reading = {
+    voltage: 0, 
+    current: 0
+  }
   
+  solar.getBusVoltage_V(function (volts) {
+    console.log("Voltage: " + volts);
+    solar.getCurrent_mA(function (current){
+      console.log("Current (mA): " + current + "\n\n");
+      reading.voltage = volts
+      reading.current = current
+    });	
+  });
+  return reading
 }
 
 function readFromMains(){
-
+  var reading = {
+    voltage: 0, 
+    current: 0
+  }
+  
+  mains.getBusVoltage_V(function (volts) {
+    console.log("Voltage: " + volts);
+    mains.getCurrent_mA(function (current){
+      console.log("Current (mA): " + current + "\n\n");
+      reading.voltage = volts
+      reading.current = current
+    });	
+  });
+  return reading
 }
 
 function read(){
+  return results = {
+    mains : readFromMains(),
+    solar: readFromSolar()
+  } 
 
 }
 // setInterval(()=>{
-//   ina219.calibrate32V1A(function () {
-  
-//     ina219.getBusVoltage_V(function (volts) {
-    
-//       console.log("Voltage: " + volts);
-//       ina219.getCurrent_mA(function (current){
-        
-//         console.log("Current (mA): " + current + "\n\n");
-//       });	
-//     });
-//   });
+//   console.log(read())
 // }, 2000) 
-
