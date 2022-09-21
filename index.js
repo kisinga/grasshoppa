@@ -1,76 +1,50 @@
+var Protocol = require('azure-iot-device-mqtt').Mqtt;
+var Client = require('azure-iot-device').Client;
+var Message = require('azure-iot-device').Message;
+var NoRetry = require('azure-iot-common').NoRetry;
+var { readFromSolar,readFromMains } = require('./read');
 
-var ina = require('easybotics-ina219');
+var connectionString = 'HostName=Grasshoppa.azure-devices.net;DeviceId=grasshoppas;SharedAccessKey=rHwduWX5SDcwCsGc6SmSF+HcG98K3Wwri1zPck4ycKc=' //value to be added here
 
-var solar = new ina()
-var mains = new ina()
-solar.init();
-mains.init(undefined, 3);
+var client = Client.fromConnectionString(connectionString, Protocol);
 
 
-mains.calibrate32V1A(function () {
-  mains.getBusVoltage_V(function (volts) {
-    
-    console.log("Voltage: " + volts);
-    mains.getCurrent_mA(function (current){
-      
-      console.log("Current (mA): " + current + "\n\n");
-    });	
+var sendMessage = (message) => {
+  client.sendEvent(message, (err) => {
+    if (err) {
+      console.error('Could not send: ' + err.toString());
+      process.exit(-1);
+    } else {
+      console.log('Message sent: ' + message.messageId);
+    }
   });
-})
+}
 
-solar.calibrate32V1A(function () {
-  solar.getBusVoltage_V(function (volts) {
-    
-    console.log("Voltage: " + volts);
-    solar.getCurrent_mA(function (current){
-      
-      console.log("Current (mA): " + current + "\n\n");
-    });	
-  });
-})
+client.setRetryPolicy(new NoRetry());
+client.open((err) => {
+  if (err) {
+    console.log('Could not connect: ' + err);
+  } else {
+    console.log('Client connected');
 
-export function readFromSolar(){
-  var reading = {
-    voltage: 0, 
-    current: 0
+    //handle error
+    client.on('error', function (err) {
+      console.error(err.message);
+      process.exit(-1);
+    });
+
+    var messageCounter = 0
+    while(true){
+    // Add call to read function
+    var message = messageCounter % 2 == 0 ? readFromMains() : readFromSolar();
+
+    message.properties.add('id', messageCounter)
+    messageCounter ++;
+    console.log('Sending message: ' + message.getData());
+
+    //send message to the cloud.
+    sendMessage(message);
   }
-  
-  solar.getBusVoltage_V(function (volts) {
-    console.log("Voltage: " + volts);
-    solar.getCurrent_mA(function (current){
-      console.log("Current (mA): " + current + "\n\n");
-      reading.voltage = volts
-      reading.current = current
-    });	
-  });
-  return reading
-}
-
-export function readFromMains(){
-  var reading = {
-    voltage: 0, 
-    current: 0
   }
-  
-  mains.getBusVoltage_V(function (volts) {
-    console.log("Voltage: " + volts);
-    mains.getCurrent_mA(function (current){
-      console.log("Current (mA): " + current + "\n\n");
-      reading.voltage = volts
-      reading.current = current
-    });	
-  });
-  return reading
-}
-
-function read(){
-  return results = {
-    mains : readFromMains(),
-    solar: readFromSolar()
-  } 
-
-}
-// setInterval(()=>{
-//   console.log(read())
-// }, 2000) 
+});
 
