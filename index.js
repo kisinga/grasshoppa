@@ -4,11 +4,15 @@ var Message = require('azure-iot-device').Message;
 var NoRetry = require('azure-iot-common').NoRetry;
 var { read} = require('./read');
 
-var connectionString = 'HostName=Grasshoppa.azure-devices.net;DeviceId=grasshoppas;SharedAccessKey=rHwduWX5SDcwCsGc6SmSF+HcG98K3Wwri1zPck4ycKc=' //value to be added here
+const fs = require('fs');
+
+let rawdata = fs.readFileSync('config.json');
+let data = JSON.parse(rawdata);
+var connectionString =data.credential  //value to be added here
 
 var client = Client.fromConnectionString(connectionString, Protocol);
 
-
+// this uploads our json data to azure IOT and subsequrntly to PowerBI
 var sendMessage = (message, id) => {
   client.sendEvent(new Message(
     message

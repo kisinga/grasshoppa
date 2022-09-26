@@ -40,9 +40,9 @@ function readFromSolar(){
     console.log("Voltage: " + volts);
     solar.getCurrent_mA(function (current){
       console.log("Current (mA): " + current + "\n\n");
-      reading.voltage1 = volts
-      reading.current1 = current
-      reading.power1= (volts * current)/1000
+      reading.voltage1 = roundOff(volts)
+      reading.current1 = roundOff(current)
+      reading.power1= roundOff((volts * current)/1000)
     });	
   });
   return reading
@@ -59,14 +59,17 @@ function readFromMains(){
     console.log("Voltage: " + volts);
     mains.getCurrent_mA(function (current){
       console.log("Current (mA): " + current + "\n\n");
-      reading.voltage2 = volts
-      reading.current2 = current
-      reading.power2= (volts * current)/1000
+      reading.voltage2 = roundOff(volts)
+      reading.current2 = roundOff(current)
+      reading.power2= roundOff((volts * current)/1000)
     });	
   });
   // make mains power constant
   reading.power2 = 2
   return reading
+}
+function roundOff(numero){
+  return Math.round(numero *100)/100
 }
 
 function read(){
@@ -75,10 +78,12 @@ function read(){
   return results = {
      ...mains,
     ...green, 
-    price: calculatePrice(green.power1, mains.power2)
+    price: roundOff(calculatePrice(green.power1, mains.power2))
   } 
 
 }
+// price calculation is dynamic and depends on the amount of power from green energy sources
+// and the amount of power from fossil souces
 function calculatePrice(greenPower, fossilpower){
   var ceilingPrice=26
   var minPrice=5
@@ -87,7 +92,8 @@ function calculatePrice(greenPower, fossilpower){
   var deduction = greenPower/totalpower*diff
   return ceilingPrice - deduction
 }
-
+// export our functions to be consumed by the module that uploads the 
+// data to azure IOT
 module.exports = {
   readFromMains,readFromSolar, read
 }
