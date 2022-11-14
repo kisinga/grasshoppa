@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+    <title>Future is Green</title>
+    <style>
+
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      text-align: center;
+    }
+
+    #one {
+      width: 300px;
+      height: 400px;
+    }
+
+    #two {
+      width: 300px;
+      height: 400px;
+    }
+
+    </style>
+</head>
+<body>
+    <div id="one"></div>
+    <div id="two"></div>
+    <script type="text/javascript">
+      var { read } = require('./read');
+
+      // pull data from here
+      setInterval(() => {
+        var message = read();
+        console.log(message);
+      }, 1000)
+
+      // Initialize the echarts instance based on the prepared dom
+      var myChartOne = echarts.init(document.getElementById('one'));
+
+      var optionOne = {
+        title: {
+          text: 'Green Energy',
+          left: 'center'
+        },
+        tooltip: {},
+        series: [
+          {
+            name: 'Energy',
+            type: 'gauge',
+            progress: {
+              show: true
+            },
+            detail: {
+              valueAnimation: true,
+              formatter: '{value}'
+            },
+            data: [
+              {
+                value: 50,
+                name: 'kWh'
+              }
+            ]
+          }
+        ]
+      };
+
+
+      // Display the chart using the configuration items and data just specified.
+      myChartOne.setOption(optionOne);
+
+      var myChartTwo = echarts.init(document.getElementById('two'));
+
+      var optionTwo = {
+        title: {
+          text: 'Price of Energy',
+          left: 'center'
+        },
+        tooltip: {},
+        series: [
+          {
+            name: 'Price',
+            type: 'gauge',
+            progress: {
+              show: true
+            },
+            detail: {
+              valueAnimation: true,
+              formatter: '{value}'
+            },
+            data: [
+              {
+                value: 50,
+                name: 'Ksh/kWh'
+              }
+            ]
+          }
+        ]
+      };
+
+      myChartTwo.setOption(optionTwo);
+    </script>
+</body>
+</html>
