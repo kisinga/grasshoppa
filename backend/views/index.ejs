@@ -32,13 +32,17 @@
     <div id="one"></div>
     <div id="two"></div>
     <script type="text/javascript">
-      var { read } = require('./read');
+      // var { read } = require('./read');
 
-      // pull data from here
-      setInterval(() => {
-        var message = read();
-        console.log(message);
-      }, 1000)
+      // // pull data from here
+      // setInterval(() => {
+      //   var message = read();
+      //   console.log(message);
+      // }, 1000)
+
+      var num = 5;
+
+      
 
       // Initialize the echarts instance based on the prepared dom
       var myChartOne = echarts.init(document.getElementById('one'));
@@ -62,7 +66,7 @@
             },
             data: [
               {
-                value: 50,
+                value: num,
                 name: 'kWh'
               }
             ]
@@ -72,7 +76,36 @@
 
 
       // Display the chart using the configuration items and data just specified.
-      myChartOne.setOption(optionOne);
+      setInterval(() => {
+        num += 10;
+        console.log(">>>", num)
+        myChartOne.setOption({
+        title: {
+          text: 'Green Energy',
+          left: 'center'
+        },
+        tooltip: {},
+        series: [
+          {
+            name: 'Energy',
+            type: 'gauge',
+            progress: {
+              show: true
+            },
+            detail: {
+              valueAnimation: true,
+              formatter: '{value}'
+            },
+            data: [
+              {
+                value: num,
+                name: 'kWh'
+              }
+            ]
+          }
+        ]
+      });
+      }, 1000)
 
       var myChartTwo = echarts.init(document.getElementById('two'));
 
