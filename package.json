@@ -1,24 +1,24 @@
 {
-  "name": "grasshoppa",
+  "name": "Grasshoppa",
   "version": "1.0.0",
-  "description": "<the winning team",
+  "description": "express EJS Raspberry pi backend for Future is green",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "start": "node index.js",
+    "start-pi": "node ./read.js",
+    "dev": "nodemon index.js",
+    "prettify": "npx prettier --write . --cache"
   },
-  "author": "grasshoppa",
+  "author": "Grasshoppa",
+  "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@azure/arm-iothub": "^6.2.0",
-    "@azure/identity": "^3.0.0",
-    "azure-iot-device": "^1.18.0",
-    "azure-iot-device-mqtt": "^1.16.0",
     "easybotics-ina219": "^0.6.4",
-    "johnny-five": "^2.1.0",
-    "raspi-io": "^11.0.0",
-    "typescript": "^4.8.3"
+    "ejs": "^3.1.8",
+    "express": "^4.18.2"
   },
   "devDependencies": {
-    "@types/node": "^18.7.18"
+    "nodemon": "^2.0.20",
+    "prettier": "2.7.1"
   }
 }
