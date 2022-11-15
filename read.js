@@ -4,9 +4,9 @@ solar.init();
 
 solar.calibrate32V1A(function () {
     solar.getBusVoltage_V(function (volts) {
-        console.log("Voltage: " + volts);
+        // console.log("Voltage: " + volts);
         solar.getCurrent_mA(function (current) {
-            console.log("Current (mA): " + current + "\n\n");
+            // console.log("Current (mA): " + current + "\n\n");
         });
     });
 });
@@ -19,9 +19,9 @@ function readFromSolar() {
     };
 
     solar.getBusVoltage_V(function (volts) {
-        console.log("Voltage: " + volts);
+        // console.log("Voltage: " + volts);
         solar.getCurrent_mA(function (current) {
-            console.log("Current (mA): " + current + "\n\n");
+            // console.log("Current (mA): " + current + "\n\n");
             reading.voltage1 = roundOff(volts);
             reading.current1 = 200;
             reading.power1 = roundOff((volts * reading.current1) / 1000);
