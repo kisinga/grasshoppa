@@ -1,22 +1,8 @@
 
-var ina = require('easybotics-ina219');
+var solar = require('easybotics-ina219');
 
-var solar = new ina()
-var mains = new ina()
 solar.init();
-mains.init(undefined, 3);
 
-
-mains.calibrate32V1A(function () {
-  mains.getBusVoltage_V(function (volts) {
-    
-    console.log("Voltage: " + volts);
-    mains.getCurrent_mA(function (current){
-      
-      console.log("Current (mA): " + current + "\n\n");
-    });	
-  });
-})
 
 solar.calibrate32V1A(function () {
   solar.getBusVoltage_V(function (volts) {
@@ -41,8 +27,8 @@ function readFromSolar(){
     solar.getCurrent_mA(function (current){
       console.log("Current (mA): " + current + "\n\n");
       reading.voltage1 = roundOff(volts)
-      reading.current1 = roundOff(current)
-      reading.power1= roundOff((volts * current)/1000)
+      reading.current1 = 200
+      reading.power1= roundOff((volts * reading.current1)/1000)
     });	
   });
   return reading
@@ -54,16 +40,6 @@ function readFromMains(){
     current2: 0,
     power2: 0
   }
-  
-  mains.getBusVoltage_V(function (volts) {
-    console.log("Voltage: " + volts);
-    mains.getCurrent_mA(function (current){
-      console.log("Current (mA): " + current + "\n\n");
-      reading.voltage2 = roundOff(volts)
-      reading.current2 = roundOff(current)
-      reading.power2= roundOff((volts * current)/1000)
-    });	
-  });
   // make mains power constant
   reading.power2 = 2
   return reading
