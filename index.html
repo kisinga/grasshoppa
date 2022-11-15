@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+        <title>Future is Green</title>
+        <style>
+            body {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                align-items: center;
+                text-align: center;
+            }
+
+            #one {
+                width: 300px;
+                height: 400px;
+            }
+
+            #two {
+                width: 300px;
+                height: 400px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="one"></div>
+        <div id="two"></div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript">
+            var socket = io();
+
+            // Initialize the echarts instance based on the prepared dom
+            var myChartOne = echarts.init(document.getElementById("one"));
+
+            socket.on("powerMsg", (msg) => {
+                var optionOne = {
+                    title: {
+                        text: "Green Energy",
+                        left: "center",
+                    },
+
+                    tooltip: {},
+                    series: [
+                        {
+                            name: "Energy",
+                            type: "gauge",
+                            axisLine: {
+                                lineStyle: {
+                                    color: [
+                                        [0.3, "#fd666d"],
+                                        [0.7, "#37a2da"],
+                                        [1, "#80ED99"],
+                                    ],
+                                },
+                            },
+                            min: 0,
+                            max: 3,
+                            pointer: {
+                                itemStyle: {
+                                    color: "auto",
+                                },
+                            },
+                            detail: {
+                                valueAnimation: true,
+                                formatter: "{value}",
+                            },
+                            data: [
+                                {
+                                    value: msg.power1,
+                                    name: "Watts",
+                                },
+                            ],
+                        },
+                    ],
+                };
+
+                var optionTwo = {
+                    title: {
+                        text: "Price of Energy",
+                        left: "center",
+                    },
+                    tooltip: {},
+                    series: [
+                        {
+                            name: "Price",
+                            type: "gauge",
+                            axisLine: {
+                                lineStyle: {
+                                    color: [
+                                        [0.3, "#80ED99"],
+                                        [0.7, "#37a2da"],
+                                        [1, "#fd666d"],
+                                    ],
+                                },
+                            },
+                            min: 10,
+                            max: 30,
+                            pointer: {
+                                itemStyle: {
+                                    color: "auto",
+                                },
+                            },
+                            detail: {
+                                valueAnimation: true,
+                                formatter: "{value}",
+                            },
+                            data: [
+                                {
+                                    value: msg.price,
+                                    name: "Ksh/kWh",
+                                },
+                            ],
+                        },
+                    ],
+                };
+                refreshCharts(optionOne, optionTwo);
+            });
+            // Display the chart using the configuration items and data just specified.
+
+            var myChartTwo = echarts.init(document.getElementById("two"));
+
+            function refreshCharts(optionOne, optionTwo) {
+                myChartOne.setOption(optionOne);
+                myChartTwo.setOption(optionTwo);
+            }
+        </script>
+    </body>
+</html>

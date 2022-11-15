@@ -1,17 +1,26 @@
-const express = require("express")
-const PORT = 8080
+const express = require("express");
+const PORT = 8080;
 const app = express();
-var { read } = require('./read');
-
-
-app.set("view engine", "ejs");
+const http = require("http");
+const path = require("path");
+const server = http.createServer(app);
+const { Server, Socket } = require("socket.io");
+const io = new Server(server);
+var { read } = require("./read");
 
 app.get("/", function (req, res) {
-  const message = read();
-  console.log(message)
-  res.render("index", {message: message});
+    const _ = read();
+    res.sendFile(path.join(__dirname + "/index.html"));
 });
 
-app.listen(PORT, function () {
-  console.log(`Server is running on port: ${PORT}: `);
+io.on("connection", (socket) => {
+    console.log("IO connected node");
+});
+
+setInterval(() => {
+    io.emit("powerMsg", read());
+}, 1000);
+
+server.listen(PORT, function () {
+    console.log(`Server is running on port: ${PORT}: `);
 });
